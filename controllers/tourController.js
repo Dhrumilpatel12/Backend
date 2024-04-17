@@ -1,4 +1,5 @@
 import Destination from '../models/Destination.js';
+import axios from "axios";
 
 export const createDestination = async (req, res) => {
     try {
@@ -70,6 +71,25 @@ export const getAllDestinations = async (req, res, next) => {
     try {
         const destinations = await Destination.find({}).skip(page * 8).limit(8);
         res.status(200).json({ success: true, count: destinations.length, message: 'Successful', data: destinations });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Internal Server Error' });
+    }
+};
+    
+export const getAllAddresses = async (req, res, next) => {
+    const page = parseInt(req.query.page) || 0;
+    const address = req.params.id;
+    const googleApiKey = 'AIzaSyAOo1wTQp54U8W0FJWtB8JAnz_l51eQxso';
+    console.log("address",address);
+    const coordinates = address.split("and");
+    console.log(coordinates);
+
+    const googleResponse = await axios.get(`https://maps.googleapis.com/maps/api/place/textsearch/json?query=famous+attractions&location=${coordinates[0]}%2C${coordinates[1]}&radius=500&type=tourist_attraction&key=${googleApiKey}`);
+
+
+    console.log("address", address);
+    try {
+        res.status(200).json({ success: true, count: 25, message: 'Successful', data: googleResponse?.data?.results });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
