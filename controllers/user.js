@@ -27,49 +27,45 @@ export const updateUser = async (req, res, next) => {
     }
 };
 
-    export const deleteUser = async (req, res, next) => {
-        const id = req.params.id;
-        try {
-            await User.findByIdAndDelete(id);
-            res.status(200).json({ success: true, message: 'Successfully deleted' });
-        } catch (err) {
-            res.status(500).json({ success: false, message: 'Failed to delete' });
-        }
-    };
+export const deleteDestination = async (req, res,next) =>{
+    const id = req.params.id
+    try{
 
-    export const deleteUserById = async (req, res,next) => {
-        try {
-            const { id } = req.params; 
-            const deleteduser = await Activity.findByIdAndDelete(id);
-            if (!deleteduser) {
-                return res.status(404).json({ success: false, message: 'Activity not found' });
-            }
-            res.json({ success: true, message: 'Activity deleted successfully' });
-        } catch (error) {
-            console.error('Error deleting Activity:', error.message);
-            res.status(500).json({ success: false, message: 'Internal Server Error' });
-        }
-    };
-    export const getSingleUser = async (req, res, next) => {
-      const id = req.params.id;
-      try {
-          const users = await User.findById(id);
-          if (!users) {
-              return res.status(404).json({ success: false, message: 'User not found' });
-          }
-          res.status(200).json({ success: true, message: 'Successful', data: desti });
-      } catch (err) {
-          res.status(500).json({ success: false, message: 'Internal Server Error' });
-      }
-  };
-  
-  export const getAllUsers = async (req, res, next) => {
-      const page = parseInt(req.query.page) || 0; // Default page is 0 if not provided
-  
-      try {
-          const user = await User.find({}).skip(page * 8).limit(8);
-          res.status(200).json({ success: true,  message: 'Successful', data: user });
-      } catch (err) {
-          res.status(500).json({ success: false, message: 'Internal Server Error' });
-      }
-  };
+       await Destination.findByIdAndDelete(id);
+
+        res.status(200).json({ success: true, message: 'Successfully deleted'});
+    }
+    catch(err){
+        res.status(500).json({ success: false, message: 'Failed to delete' });
+    }
+};
+export const getsingleDestination = async (req, res,next) =>{
+    const id = req.params.id
+    try{
+
+       const desti =  await Destination.findById(id);
+
+        res.status(200).json({ success: true, message: 'Successful', data: desti });
+    }
+    catch(err){
+        res.status(404).json({ success: false, message: 'not found' });
+    }
+};
+
+export const getallDestination = async (req, res,next) =>{
+
+
+    const page = parseInt(req.query.page)
+
+    try{
+
+        const destination = await Destination.find({}).skip(page * 8).limit(8);
+        res.status(200).json({ success: true,  count: destination.length,
+            message: 'Successful', 
+        data: destination });
+    }
+    catch(err){
+        res.status(404).json({ success: false, message: 'not found' });
+    }
+};
+
